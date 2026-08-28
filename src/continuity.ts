@@ -1,4 +1,4 @@
-import type { AgentToolInterceptor } from "@tandem/sdk";
+import type { AgentToolInterceptor } from "@maxanstey-meridian/tandem";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import type { State } from "./state.js";

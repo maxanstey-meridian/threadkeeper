@@ -1,9 +1,10 @@
 packages:
   - .
 
-overrides:
-  "@tandem/runtime": "file:../../../tandem/typescript/packages/runtime"
-  "@tandem/runtime-darwin-arm64": "file:../../../tandem/typescript/packages/runtime-darwin-arm64"
+minimumReleaseAgeExclude:
+  - "@maxanstey-meridian/tandem"
+  - "@maxanstey-meridian/tandem-runtime"
+  - "@maxanstey-meridian/tandem-runtime-darwin-arm64"
 
 allowBuilds:
   esbuild: true

@@ -8,7 +8,7 @@ import {
   route,
   skill,
   type ChatClient,
-} from "@tandem/sdk";
+} from "@maxanstey-meridian/tandem";
 import { continuityPolicy } from "./continuity.js";
 import {
   Checkpoint,
@@ -81,6 +81,7 @@ export const createThreadkeeper = (options: ThreadkeeperOptions) => {
       "When checkpointing is required, call write_checkpoint. When the plan is complete and verified, call finish.",
     ].join(" "),
     client: options.executor,
+    reasoning: { effort: "low" },
     message: (state) =>
       [
         "PLAN (authoritative):",
@@ -131,8 +132,8 @@ export const createThreadkeeper = (options: ThreadkeeperOptions) => {
   const reviewWorkspace = repository.withTools([
     agentTools.always("read_file", "ls", "grep", "git:ro"),
   ]);
-  const alignmentReviewer = agent<ThreadkeeperState, AlignmentReview>({
-    id: "alignment-reviewer",
+  const reviewer = agent<ThreadkeeperState, AlignmentReview>({
+    id: "reviewer",
     instructions: [
       "You are Threadkeeper's Alignment Reviewer, an independent engineering reviewer responsible for identifying divergence while implementation is in progress.",
       "Review the repository work completed so far against the whole authored plan. Inspect the implementation and relevant unchanged code, challenge the Executor's current account, and look for concrete counterexamples to claimed alignment before allowing work to continue.",
@@ -145,6 +146,7 @@ export const createThreadkeeper = (options: ThreadkeeperOptions) => {
       "Return Stop only when repository evidence proves the plan cannot continue without violating its scope or a required external prerequisite is unavailable. Stop is terminal; do not use Correct when no Executor action can resolve the blocker in this workspace.",
     ].join(" "),
     client: options.reviewer,
+    reasoning: { effort: "low" },
     message: (state) =>
       [
         "PLAN (authoritative):",
@@ -198,8 +200,8 @@ export const createThreadkeeper = (options: ThreadkeeperOptions) => {
     persist: true,
   });
 
-  const acceptanceReviewer = agent<ThreadkeeperState, AcceptanceReview>({
-    id: "acceptance-reviewer",
+  const acceptance = agent<ThreadkeeperState, AcceptanceReview>({
+    id: "acceptance",
     instructions: [
       "You are Threadkeeper's Acceptance Reviewer, an independent code-review agent responsible for deciding whether the completed repository change should be accepted.",
       "Review the repository as a production change against the complete authored plan. Inspect the repository state necessary to reach that decision, including relevant unchanged code. Look for concrete counterexamples to claimed completion before accepting.",
@@ -210,6 +212,7 @@ export const createThreadkeeper = (options: ThreadkeeperOptions) => {
       "Return Stop only when repository evidence proves acceptance cannot continue without violating the plan or a required external prerequisite is unavailable. Stop is terminal; do not use Correct when no Executor action can resolve the blocker in this workspace.",
     ].join(" "),
     client: options.acceptanceReviewer ?? options.reviewer,
+    reasoning: { effort: "medium" },
     message: (state) =>
       [
         "PLAN (authoritative):",
@@ -256,68 +259,68 @@ export const createThreadkeeper = (options: ThreadkeeperOptions) => {
   return pipeline({
     name: "threadkeeper",
     state: State,
-    nodes: [executor, alignmentReviewer, acceptanceReviewer, done, failed],
+    nodes: [executor, reviewer, acceptance, done, failed],
     start: executor,
     routes: [
-      route({ from: executor, outcome: "success", to: alignmentReviewer, label: "checkpoint" }),
+      route({ from: executor, outcome: "success", to: reviewer, label: "checkpoint" }),
       route({ from: executor, outcome: "failed", to: failed, label: "executor failed" }),
       route({
-        from: alignmentReviewer,
+        from: reviewer,
         outcome: "success",
         to: executor,
         when: (state) => state.alignmentReview?.decision === "Continue",
         label: "continue",
       }),
       route({
-        from: alignmentReviewer,
+        from: reviewer,
         outcome: "success",
         to: executor,
         when: (state) => state.alignmentReview?.decision === "Correct",
         label: "correct",
       }),
       route({
-        from: alignmentReviewer,
+        from: reviewer,
         outcome: "success",
-        to: acceptanceReviewer,
+        to: acceptance,
         when: (state) => state.alignmentReview?.decision === "ReadyForAcceptance",
         label: "ready for acceptance",
       }),
       route({
-        from: alignmentReviewer,
+        from: reviewer,
         outcome: "success",
         to: failed,
         when: alignmentStopped,
         label: "stopped",
       }),
       route({
-        from: alignmentReviewer,
+        from: reviewer,
         outcome: "failed",
         to: failed,
         label: "alignment review failed",
       }),
       route({
-        from: acceptanceReviewer,
+        from: acceptance,
         outcome: "success",
         to: executor,
         when: (state) => state.acceptanceReview?.decision === "Correct",
         label: "acceptance corrections",
       }),
       route({
-        from: acceptanceReviewer,
+        from: acceptance,
         outcome: "success",
         to: done,
         when: (state) => state.acceptanceReview?.decision === "Accept",
         label: "accepted",
       }),
       route({
-        from: acceptanceReviewer,
+        from: acceptance,
         outcome: "success",
         to: failed,
         when: acceptanceStopped,
         label: "acceptance stopped",
       }),
       route({
-        from: acceptanceReviewer,
+        from: acceptance,
         outcome: "failed",
         to: failed,
         label: "acceptance review failed",

@@ -1,4 +1,4 @@
-import type { ChatClient } from "@tandem/sdk";
+import type { ChatClient } from "@maxanstey-meridian/tandem";
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { createThreadkeeper } from "../src/pipeline.js";
@@ -71,8 +71,8 @@ test("Executor numeric context options override the defaults", () => {
 
 test("roles have concrete engineering identities and honest repository framing", () => {
   const executor = agentDefinition("executor");
-  const alignment = agentDefinition("alignment-reviewer");
-  const acceptance = agentDefinition("acceptance-reviewer");
+  const alignment = agentDefinition("reviewer");
+  const acceptance = agentDefinition("acceptance");
 
   assert.match(executor.instructions, /autonomous coding agent/);
   assert.match(executor.instructions, /affected code and consumers not explicitly named/);
@@ -108,10 +108,10 @@ test("dynamic messages label participant material without presenting it as repos
     /PRIOR EXECUTOR CHECKPOINT \(UNVERIFIED CONTINUITY\)/,
   );
   assert.match(
-    agentDefinition("alignment-reviewer").message(state),
+    agentDefinition("reviewer").message(state),
     /EXECUTOR CHECKPOINT \(UNVERIFIED CONTINUITY\)/,
   );
-  const acceptanceMessage = agentDefinition("acceptance-reviewer").message(state);
+  const acceptanceMessage = agentDefinition("acceptance").message(state);
   assert.match(acceptanceMessage, /EXECUTOR COMPLETION NOTES \(UNVERIFIED\)/);
   assert.match(acceptanceMessage, /PRIOR ALIGNMENT DIRECTION/);
 });

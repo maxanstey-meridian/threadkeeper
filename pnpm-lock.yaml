@@ -4,23 +4,13 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-overrides:
-  '@tandem/runtime': file:../../../tandem/typescript/packages/runtime
-  '@tandem/runtime-darwin-arm64': file:../../../tandem/typescript/packages/runtime-darwin-arm64
-
 importers:
 
   .:
     dependencies:
-      '@tandem/runtime':
-        specifier: file:../../../tandem/typescript/packages/runtime
-        version: file:../../../tandem/typescript/packages/runtime
-      '@tandem/runtime-darwin-arm64':
-        specifier: file:../../../tandem/typescript/packages/runtime-darwin-arm64
-        version: file:../../../tandem/typescript/packages/runtime-darwin-arm64
-      '@tandem/sdk':
-        specifier: file:../../../tandem/typescript/packages/sdk
-        version: file:../../../tandem/typescript/packages/sdk(zod@4.4.3)
+      '@maxanstey-meridian/tandem':
+        specifier: 0.1.0-alpha.1
+        version: 0.1.0-alpha.1(zod@4.4.3)
       zod:
         specifier: ^4.3.6
         version: 4.4.3
@@ -198,6 +188,21 @@ packages:
     engines: {node: '>=18'}
     cpu: [x64]
     os: [win32]
+
+  '@maxanstey-meridian/tandem-runtime-darwin-arm64@0.1.0-alpha.1':
+    resolution: {integrity: sha512-pKc5Y0oMfALJqV8Z+DWHR15n47HKafsqblU5RMBhdgiQuzwok6wNDR6f/fwxp8wZb/YSZ0cw9i3F9xV6Gs+toQ==}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@maxanstey-meridian/tandem-runtime@0.1.0-alpha.1':
+    resolution: {integrity: sha512-d/zPJ/XjXkttWz/3CmkKSCm3rzDv+9Vu+Ldj5wt37mNGhG9/jbcyCs4l+kFQfIKC43ViRqLmO4tu7cP3slTn4A==}
+    engines: {node: '>=22'}
+
+  '@maxanstey-meridian/tandem@0.1.0-alpha.1':
+    resolution: {integrity: sha512-epT4m/Akl7AeIg2k2CBqf78lb8qzrDD0QSl0QVBbT9v8FTnRYEMryQ8CVsXEFJVf3QDWojTYhk6msQWndXIBYw==}
+    engines: {node: '>=22'}
+    peerDependencies:
+      zod: ^4.3.6
 
   '@oxfmt/binding-android-arm-eabi@0.62.0':
     resolution: {integrity: sha512-pdsv0C4gPjJ8H1+sd8u0BDx+yLACTL+rgeMIOL1ln4ihSnhw8CWXtYWgvcSkyTfgGBIzFKab+d8rx9Xl4en/Kw==}
@@ -443,21 +448,6 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@tandem/runtime-darwin-arm64@file:../../../tandem/typescript/packages/runtime-darwin-arm64':
-    resolution: {directory: ../../../tandem/typescript/packages/runtime-darwin-arm64, type: directory}
-    cpu: [arm64]
-    os: [darwin]
-
-  '@tandem/runtime@file:../../../tandem/typescript/packages/runtime':
-    resolution: {directory: ../../../tandem/typescript/packages/runtime, type: directory}
-    engines: {node: '>=22'}
-
-  '@tandem/sdk@file:../../../tandem/typescript/packages/sdk':
-    resolution: {directory: ../../../tandem/typescript/packages/sdk, type: directory}
-    engines: {node: '>=22'}
-    peerDependencies:
-      zod: ^4.3.6
-
   '@types/node@24.13.3':
     resolution: {integrity: sha512-Dh8vAsV36ig5wa9OX4pXvMc9D3Veibfw2wix0CUwYODLD8nkj9UsLjASr49nPg+2eKzxhBV+v7L8pXvT4e639Q==}
 
@@ -471,8 +461,8 @@ packages:
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
 
-  node-api-dotnet@0.9.21:
-    resolution: {integrity: sha512-04LsDXdcPwSe6n/2Ph0wDKPwJFTdiLImcfr0Ecg0Y3lJOSnBisgcXVTJ94/j1VA7sFnK4K2oWRQTP3O58StkZA==}
+  node-api-dotnet@0.9.26:
+    resolution: {integrity: sha512-Ce2QB3Oi9Wf1DhzzmrBtj3b9617H9fGHiwqflovqxmnQ/qSTaSriUA1dUDNhDPROZbEBSvv5zhRgfE+3BwbsIA==}
 
   oxfmt@0.62.0:
     resolution: {integrity: sha512-vxgGHTmnDU9j4CX7dDBLzxgmHxfda/yPcgJkGCMUSCwRmz+euo/V08xXLNgXTeqAB9Fhf3Pe2nO1RNKLCVgphQ==}
@@ -600,6 +590,20 @@ snapshots:
   '@esbuild/win32-x64@0.28.2':
     optional: true
 
+  '@maxanstey-meridian/tandem-runtime-darwin-arm64@0.1.0-alpha.1':
+    dependencies:
+      node-api-dotnet: 0.9.26
+    optional: true
+
+  '@maxanstey-meridian/tandem-runtime@0.1.0-alpha.1':
+    optionalDependencies:
+      '@maxanstey-meridian/tandem-runtime-darwin-arm64': 0.1.0-alpha.1
+
+  '@maxanstey-meridian/tandem@0.1.0-alpha.1(zod@4.4.3)':
+    dependencies:
+      '@maxanstey-meridian/tandem-runtime': 0.1.0-alpha.1
+      zod: 4.4.3
+
   '@oxfmt/binding-android-arm-eabi@0.62.0':
     optional: true
 
@@ -714,19 +718,6 @@ snapshots:
   '@oxlint/binding-win32-x64-msvc@1.78.0':
     optional: true
 
-  '@tandem/runtime-darwin-arm64@file:../../../tandem/typescript/packages/runtime-darwin-arm64':
-    dependencies:
-      node-api-dotnet: 0.9.21
-
-  '@tandem/runtime@file:../../../tandem/typescript/packages/runtime':
-    optionalDependencies:
-      '@tandem/runtime-darwin-arm64': file:../../../tandem/typescript/packages/runtime-darwin-arm64
-
-  '@tandem/sdk@file:../../../tandem/typescript/packages/sdk(zod@4.4.3)':
-    dependencies:
-      '@tandem/runtime': file:../../../tandem/typescript/packages/runtime
-      zod: 4.4.3
-
   '@types/node@24.13.3':
     dependencies:
       undici-types: 7.18.2
@@ -763,7 +754,8 @@ snapshots:
   fsevents@2.3.3:
     optional: true
 
-  node-api-dotnet@0.9.21: {}
+  node-api-dotnet@0.9.26:
+    optional: true
 
   oxfmt@0.62.0:
     dependencies:
