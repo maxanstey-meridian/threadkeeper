@@ -1,0 +1,20 @@
+version: "3"
+
+tasks:
+  install:
+    desc: Build and globally link the Threadkeeper CLI
+    cmds:
+      - pnpm install --force
+      - pnpm check
+      - chmod +x {{.ROOT_DIR}}/dist/src/cli.js
+      - npm link
+
+  check:
+    desc: Run the complete Threadkeeper gate
+    cmds:
+      - pnpm check
+
+  uninstall:
+    desc: Remove the globally linked Threadkeeper CLI
+    cmds:
+      - npm unlink --global threadkeeper

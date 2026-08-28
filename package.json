@@ -1,0 +1,35 @@
+{
+  "name": "threadkeeper",
+  "version": "0.1.0",
+  "private": true,
+  "bin": {
+    "threadkeeper": "./dist/src/cli.js"
+  },
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "check": "pnpm build && pnpm lint && pnpm format:check && pnpm test",
+    "format": "oxfmt --write .",
+    "format:check": "oxfmt --check .",
+    "lint": "oxlint .",
+    "start": "tsx src/cli.ts",
+    "test": "node --import tsx --test tests/*.test.ts"
+  },
+  "dependencies": {
+    "@tandem/runtime": "file:../../../tandem/typescript/packages/runtime",
+    "@tandem/runtime-darwin-arm64": "file:../../../tandem/typescript/packages/runtime-darwin-arm64",
+    "@tandem/sdk": "file:../../../tandem/typescript/packages/sdk",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "oxfmt": "^0.62.0",
+    "oxlint": "^1.77.0",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "packageManager": "pnpm@11.20.0"
+}

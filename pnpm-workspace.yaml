@@ -1,0 +1,9 @@
+packages:
+  - .
+
+overrides:
+  "@tandem/runtime": "file:../../../tandem/typescript/packages/runtime"
+  "@tandem/runtime-darwin-arm64": "file:../../../tandem/typescript/packages/runtime-darwin-arm64"
+
+allowBuilds:
+  esbuild: true
