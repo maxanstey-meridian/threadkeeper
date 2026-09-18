@@ -1,10 +1,6 @@
 packages:
   - .
 
-minimumReleaseAgeExclude:
-  - "@maxanstey-meridian/tandem"
-  - "@maxanstey-meridian/tandem-runtime"
-  - "@maxanstey-meridian/tandem-runtime-darwin-arm64"
-
 allowBuilds:
   esbuild: true
+  "@maxanstey-meridian/tandem@git+https://github.com/maxanstey-meridian/tandem-ts.git": true
